@@ -13,6 +13,8 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
+
 import static frc.robot.Constants.DriveConstants.*;
 
 
@@ -21,10 +23,10 @@ public class CANDriveSubsystem extends SubsystemBase {
   //private final SparkMax leftFollower;
   //private final SparkMax rightLeader;
   //private final SparkMax rightFollower;
-private final TalonFX leftLeader = new TalonFX(1);
-private final TalonFX rightLeader = new TalonFX(2);
-private final TalonFX leftFollower = new TalonFX(3);
-private final TalonFX rightFollower = new TalonFX(4);
+private final TalonFX leftLeader = new TalonFX(DriveConstants.LEFT_LEADER_ID);
+private final TalonFX rightLeader = new TalonFX(DriveConstants.RIGHT_LEADER_ID);
+private final TalonFX leftFollower = new TalonFX(DriveConstants.LEFT_FOLLOWER_ID);
+private final TalonFX rightFollower = new TalonFX(DriveConstants.RIGHT_FOLLOWER_ID);
   private final DifferentialDrive drive;
 
 
@@ -50,8 +52,8 @@ private final TalonFX rightFollower = new TalonFX(4);
 
   public void configureLeftLeader() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Voltage.PeakForwardVoltage = 12.0;
-    config.Voltage.PeakReverseVoltage = -12.0;
+    config.Voltage.PeakForwardVoltage = 1.0;
+    config.Voltage.PeakReverseVoltage = -1.0;
 
     config.CurrentLimits.SupplyCurrentLimit = DRIVE_MOTOR_CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -61,20 +63,20 @@ private final TalonFX rightFollower = new TalonFX(4);
 
   public void configureRightLeader() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Voltage.PeakForwardVoltage = 12.0;
-    config.Voltage.PeakReverseVoltage = -12.0;
+    config.Voltage.PeakForwardVoltage = 1.0;
+    config.Voltage.PeakReverseVoltage = -1.0;
 
     config.CurrentLimits.SupplyCurrentLimit = DRIVE_MOTOR_CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     rightLeader.getConfigurator().apply(config);
     rightLeader.setExpiration(250);
   }
 
   public void configureLeftFollower() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Voltage.PeakForwardVoltage = 12.0;
-    config.Voltage.PeakReverseVoltage = -12.0;
+    config.Voltage.PeakForwardVoltage = 1.0;
+    config.Voltage.PeakReverseVoltage = -1.0;
 
     config.CurrentLimits.SupplyCurrentLimit = DRIVE_MOTOR_CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -86,12 +88,12 @@ private final TalonFX rightFollower = new TalonFX(4);
 
   public void configureRightFollower() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Voltage.PeakForwardVoltage = 12.0;
-    config.Voltage.PeakReverseVoltage = -12.0;
+    config.Voltage.PeakForwardVoltage = 1.0;
+    config.Voltage.PeakReverseVoltage = -1.0;
 
     config.CurrentLimits.SupplyCurrentLimit = DRIVE_MOTOR_CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     rightFollower.setControl(new Follower(rightLeader.getDeviceID(), MotorAlignmentValue.Aligned));
     rightFollower.getConfigurator().apply(config);
     rightFollower.setExpiration(250);

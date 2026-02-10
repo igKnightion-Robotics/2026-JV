@@ -4,39 +4,46 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.PersistMode;
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkMax;
+
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.FuelConstants.*;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+
 public class CANFuelSubsystem extends SubsystemBase {
-  private final SparkMax feederRoller;
-  private final SparkMax intakeLauncherRoller;
+  private final TalonFX feederRoller;
+  private final TalonFX intakeLauncherRoller;
 
   /** Creates a new CANBallSubsystem. */
   public CANFuelSubsystem() {
     // create brushed motors for each of the motors on the launcher mechanism
-    intakeLauncherRoller = new SparkMax(INTAKE_LAUNCHER_MOTOR_ID, MotorType.kBrushed);
-    feederRoller = new SparkMax(FEEDER_MOTOR_ID, MotorType.kBrushed);
+    intakeLauncherRoller = new TalonFX(INTAKE_LAUNCHER_MOTOR_ID);
+    feederRoller = new TalonFX(FEEDER_MOTOR_ID);
 
     // create the configuration for the feeder roller, set a current limit and apply
     // the config to the controller
-    SparkMaxConfig feederConfig = new SparkMaxConfig();
-    feederConfig.smartCurrentLimit(FEEDER_MOTOR_CURRENT_LIMIT);
-    feederRoller.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    TalonFXConfiguration feederConfig = new TalonFXConfiguration();
+    feederConfig.CurrentLimits.SupplyCurrentLimit = FEEDER_MOTOR_CURRENT_LIMIT;
+    feederConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    feederRoller.getConfigurator().apply(feederConfig);
+    feederRoller.setExpiration(250);
+    feederConfig.Voltage.PeakForwardVoltage = 7.0;
+    feederConfig.Voltage.PeakReverseVoltage = -7.0;
 
     // create the configuration for the launcher roller, set a current limit, set
     // the motor to inverted so that positive values are used for both intaking and
     // launching, and apply the config to the controller
-    SparkMaxConfig launcherConfig = new SparkMaxConfig();
-    launcherConfig.inverted(true);
-    launcherConfig.smartCurrentLimit(LAUNCHER_MOTOR_CURRENT_LIMIT);
-    intakeLauncherRoller.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    TalonFXConfiguration launcherConfig = new TalonFXConfiguration();
+    launcherConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    launcherConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    intakeLauncherRoller.getConfigurator().apply(launcherConfig);
+    intakeLauncherRoller.setExpiration(250);
+    launcherConfig.Voltage.PeakForwardVoltage = 4.0;
+    launcherConfig.Voltage.PeakReverseVoltage = -4.0;
 
     // put default values for various fuel operations onto the dashboard
     // all commands using this subsystem pull values from the dashbaord to allow
