@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.FuelConstants.*;
 
@@ -29,10 +30,10 @@ public class CANFuelSubsystem extends SubsystemBase {
     TalonFXConfiguration feederConfig = new TalonFXConfiguration();
     feederConfig.CurrentLimits.SupplyCurrentLimit = FEEDER_MOTOR_CURRENT_LIMIT;
     feederConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    feederConfig.Voltage.PeakForwardVoltage = 8.0;
+    feederConfig.Voltage.PeakReverseVoltage = -8.0;
     feederRoller.getConfigurator().apply(feederConfig);
     feederRoller.setExpiration(250);
-    feederConfig.Voltage.PeakForwardVoltage = 7.0;
-    feederConfig.Voltage.PeakReverseVoltage = -7.0;
 
     // create the configuration for the launcher roller, set a current limit, set
     // the motor to inverted so that positive values are used for both intaking and
@@ -40,10 +41,10 @@ public class CANFuelSubsystem extends SubsystemBase {
     TalonFXConfiguration launcherConfig = new TalonFXConfiguration();
     launcherConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     launcherConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    intakeLauncherRoller.getConfigurator().apply(launcherConfig);
+    launcherConfig.Voltage.PeakForwardVoltage = 8.0;
+    launcherConfig.Voltage.PeakReverseVoltage = -8.0;
     intakeLauncherRoller.setExpiration(250);
-    launcherConfig.Voltage.PeakForwardVoltage = 4.0;
-    launcherConfig.Voltage.PeakReverseVoltage = -4.0;
+    intakeLauncherRoller.getConfigurator().apply(launcherConfig);
 
     // put default values for various fuel operations onto the dashboard
     // all commands using this subsystem pull values from the dashbaord to allow
@@ -54,6 +55,27 @@ public class CANFuelSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Launching feeder roller value", LAUNCHING_FEEDER_VOLTAGE);
     SmartDashboard.putNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_VOLTAGE);
     SmartDashboard.putNumber("Spin-up feeder roller value", SPIN_UP_FEEDER_VOLTAGE);
+  }
+
+  public Command runShooter(){
+    return this.run(() -> {
+      setIntakeLauncherRoller(LAUNCHING_LAUNCHER_VOLTAGE);
+      setFeederRoller(0);
+    });
+  }
+
+  public Command launch(){
+    return this.run(() -> {
+      setIntakeLauncherRoller(LAUNCHING_LAUNCHER_VOLTAGE);
+      setFeederRoller(LAUNCHING_FEEDER_VOLTAGE);
+    });
+  }
+
+  public Command intake(){
+    return this.run(() -> {
+      setIntakeLauncherRoller(INTAKING_INTAKE_VOLTAGE);
+      setFeederRoller(INTAKING_FEEDER_VOLTAGE);
+    });
   }
   
   // A method to set the voltage of the intake roller
