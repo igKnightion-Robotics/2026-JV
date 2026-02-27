@@ -52,8 +52,8 @@ private final TalonFX rightFollower = new TalonFX(DriveConstants.RIGHT_FOLLOWER_
 
   public void configureLeftLeader() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Voltage.PeakForwardVoltage = 1.0;
-    config.Voltage.PeakReverseVoltage = -1.0;
+    config.Voltage.PeakForwardVoltage = 2.0;
+    config.Voltage.PeakReverseVoltage = -2.0;
 
     config.CurrentLimits.SupplyCurrentLimit = DRIVE_MOTOR_CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -63,8 +63,8 @@ private final TalonFX rightFollower = new TalonFX(DriveConstants.RIGHT_FOLLOWER_
 
   public void configureRightLeader() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Voltage.PeakForwardVoltage = 1.0;
-    config.Voltage.PeakReverseVoltage = -1.0;
+    config.Voltage.PeakForwardVoltage = 2.0;
+    config.Voltage.PeakReverseVoltage = -2.0;
 
     config.CurrentLimits.SupplyCurrentLimit = DRIVE_MOTOR_CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -75,8 +75,8 @@ private final TalonFX rightFollower = new TalonFX(DriveConstants.RIGHT_FOLLOWER_
 
   public void configureLeftFollower() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Voltage.PeakForwardVoltage = 1.0;
-    config.Voltage.PeakReverseVoltage = -1.0;
+    config.Voltage.PeakForwardVoltage = 2.0;
+    config.Voltage.PeakReverseVoltage = -2.0;
 
     config.CurrentLimits.SupplyCurrentLimit = DRIVE_MOTOR_CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -88,8 +88,8 @@ private final TalonFX rightFollower = new TalonFX(DriveConstants.RIGHT_FOLLOWER_
 
   public void configureRightFollower() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Voltage.PeakForwardVoltage = 1.0;
-    config.Voltage.PeakReverseVoltage = -1.0;
+    config.Voltage.PeakForwardVoltage = 2.0;
+    config.Voltage.PeakReverseVoltage = -2.0;
 
     config.CurrentLimits.SupplyCurrentLimit = DRIVE_MOTOR_CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
