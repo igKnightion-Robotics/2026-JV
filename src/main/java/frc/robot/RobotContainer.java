@@ -81,7 +81,9 @@ public class RobotContainer {
     // value)
     driveSubsystem.setDefaultCommand(new Drive(driveSubsystem, driverController));
 
-    fuelSubsystem.setDefaultCommand(fuelSubsystem.intake());
+    fuelSubsystem.setDefaultCommand(fuelSubsystem.stopintake());
+
+    driverController.b().toggleOnTrue(fuelSubsystem.intake());
   }
 
   /**

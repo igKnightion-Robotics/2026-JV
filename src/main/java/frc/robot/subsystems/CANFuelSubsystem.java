@@ -77,7 +77,10 @@ public class CANFuelSubsystem extends SubsystemBase {
       setFeederRoller(INTAKING_FEEDER_VOLTAGE);
     });
   }
-  
+
+  public Command stopintake(){
+    return this.run(this::stop);
+  }  
   // A method to set the voltage of the intake roller
   public void setIntakeLauncherRoller(double voltage) {
     intakeLauncherRoller.setVoltage(voltage);
