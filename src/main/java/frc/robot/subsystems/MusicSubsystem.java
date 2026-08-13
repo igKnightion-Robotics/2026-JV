@@ -22,7 +22,7 @@ public class MusicSubsystem extends SubsystemBase{
     private final Orchestra orchestra;
 
     public MusicSubsystem() {
-        // Load the music file
+        // Load the music files
 
         musicMotor1 = new TalonFX(6);
         musicMotor2 = new TalonFX(5);
