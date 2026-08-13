@@ -28,16 +28,16 @@ private final TalonFX leftLeader = new TalonFX(DriveConstants.LEFT_LEADER_ID);
 private final TalonFX rightLeader = new TalonFX(DriveConstants.RIGHT_LEADER_ID);
 private final TalonFX leftFollower = new TalonFX(DriveConstants.LEFT_FOLLOWER_ID);
 private final TalonFX rightFollower = new TalonFX(DriveConstants.RIGHT_FOLLOWER_ID);
-// Orchestra orchestra = new Orchestra();
-
   private final DifferentialDrive drive;
 
+// 
 
   public CANDriveSubsystem() {
     configureLeftLeader();
     configureRightLeader();
     configureLeftFollower();
     configureRightFollower();
+
 
     // set up differential drive class
     // drive = new DifferentialDrive(leftLeader, rightLeader);

@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static frc.robot.Constants.OperatorConstants.*;
@@ -16,6 +17,9 @@ import frc.robot.commands.Intake;
 import frc.robot.commands.LaunchSequence;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
+
+import frc.robot.subsystems.MusicSubsystem;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -39,6 +43,8 @@ public class RobotContainer {
 
   // The autonomous chooser
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
+    private final MusicSubsystem musicSubsystem = new MusicSubsystem();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -84,6 +90,12 @@ public class RobotContainer {
     fuelSubsystem.setDefaultCommand(fuelSubsystem.stopintake());
 
     driverController.b().toggleOnTrue(fuelSubsystem.intake());
+
+    driverController.x().onTrue(
+    Commands.runOnce(musicSubsystem::playMusic));
+
+    driverController.y().onTrue(
+        Commands.runOnce(musicSubsystem::stopMusic));
   }
 
   /**
