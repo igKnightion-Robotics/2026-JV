@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static frc.robot.Constants.OperatorConstants.*;
@@ -16,6 +17,9 @@ import frc.robot.commands.Intake;
 import frc.robot.commands.LaunchSequence;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
+
+import frc.robot.subsystems.MusicSubsystem;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -39,6 +43,8 @@ public class RobotContainer {
 
   // The autonomous chooser
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
+    private final MusicSubsystem musicSubsystem = new MusicSubsystem();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -66,13 +72,13 @@ public class RobotContainer {
   private void configureBindings() {
 
     // While the left bumper on operator controller is held, intake Fuel
-    operatorController.leftBumper().whileTrue(new Intake(fuelSubsystem));
+    driverController.leftBumper().whileTrue(fuelSubsystem.runShooter());
     // While the right bumper on the operator controller is held, spin up for 1
     // second, then launch fuel. When the button is released, stop.
-    operatorController.rightBumper().whileTrue(new LaunchSequence(fuelSubsystem));
+    driverController.rightBumper().whileTrue(fuelSubsystem.launch());
     // While the A button is held on the operator controller, eject fuel back out
     // the intake
-    operatorController.a().whileTrue(new Eject(fuelSubsystem));
+    driverController.a().whileTrue(new Eject(fuelSubsystem));
 
     // Set the default command for the drive subsystem to the command provided by
     // factory with the values provided by the joystick axes on the driver
@@ -81,7 +87,15 @@ public class RobotContainer {
     // value)
     driveSubsystem.setDefaultCommand(new Drive(driveSubsystem, driverController));
 
-    fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
+    fuelSubsystem.setDefaultCommand(fuelSubsystem.stopintake());
+
+    driverController.b().toggleOnTrue(fuelSubsystem.intake());
+
+    driverController.x().onTrue(
+    Commands.runOnce(musicSubsystem::playMusic));
+
+    driverController.y().onTrue(
+        Commands.runOnce(musicSubsystem::stopMusic));
   }
 
   /**

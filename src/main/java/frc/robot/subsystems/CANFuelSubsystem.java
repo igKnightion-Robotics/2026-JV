@@ -4,39 +4,47 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkMax;
+
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.FuelConstants.*;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+
 public class CANFuelSubsystem extends SubsystemBase {
-  private final SparkMax feederRoller;
-  private final SparkMax intakeLauncherRoller;
+  private final TalonFX feederRoller;
+  private final TalonFX intakeLauncherRoller;
 
   /** Creates a new CANBallSubsystem. */
   public CANFuelSubsystem() {
     // create brushed motors for each of the motors on the launcher mechanism
-    intakeLauncherRoller = new SparkMax(INTAKE_LAUNCHER_MOTOR_ID, MotorType.kBrushed);
-    feederRoller = new SparkMax(FEEDER_MOTOR_ID, MotorType.kBrushed);
+    intakeLauncherRoller = new TalonFX(INTAKE_LAUNCHER_MOTOR_ID);
+    feederRoller = new TalonFX(FEEDER_MOTOR_ID);
 
     // create the configuration for the feeder roller, set a current limit and apply
     // the config to the controller
-    SparkMaxConfig feederConfig = new SparkMaxConfig();
-    feederConfig.smartCurrentLimit(FEEDER_MOTOR_CURRENT_LIMIT);
-    feederRoller.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    TalonFXConfiguration feederConfig = new TalonFXConfiguration();
+    feederConfig.CurrentLimits.SupplyCurrentLimit = FEEDER_MOTOR_CURRENT_LIMIT;
+    feederConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    feederConfig.Voltage.PeakForwardVoltage = 8.0;
+    feederConfig.Voltage.PeakReverseVoltage = -8.0;
+    feederRoller.getConfigurator().apply(feederConfig);
+    feederRoller.setExpiration(250);
 
     // create the configuration for the launcher roller, set a current limit, set
     // the motor to inverted so that positive values are used for both intaking and
     // launching, and apply the config to the controller
-    SparkMaxConfig launcherConfig = new SparkMaxConfig();
-    launcherConfig.inverted(true);
-    launcherConfig.smartCurrentLimit(LAUNCHER_MOTOR_CURRENT_LIMIT);
-    intakeLauncherRoller.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    TalonFXConfiguration launcherConfig = new TalonFXConfiguration();
+    launcherConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    launcherConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    launcherConfig.Voltage.PeakForwardVoltage = 8.0;
+    launcherConfig.Voltage.PeakReverseVoltage = -8.0;
+    intakeLauncherRoller.setExpiration(250);
+    intakeLauncherRoller.getConfigurator().apply(launcherConfig);
 
     // put default values for various fuel operations onto the dashboard
     // all commands using this subsystem pull values from the dashbaord to allow
@@ -49,6 +57,30 @@ public class CANFuelSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Spin-up feeder roller value", SPIN_UP_FEEDER_VOLTAGE);
   }
 
+  public Command runShooter(){
+    return this.run(() -> {
+      setIntakeLauncherRoller(LAUNCHING_LAUNCHER_VOLTAGE);
+      setFeederRoller(0);
+    });
+  }
+
+  public Command launch(){
+    return this.run(() -> {
+      setIntakeLauncherRoller(LAUNCHING_LAUNCHER_VOLTAGE);
+      setFeederRoller(LAUNCHING_FEEDER_VOLTAGE);
+    });
+  }
+
+  public Command intake(){
+    return this.run(() -> {
+      setIntakeLauncherRoller(INTAKING_INTAKE_VOLTAGE);
+      setFeederRoller(INTAKING_FEEDER_VOLTAGE);
+    });
+  }
+
+  public Command stopintake(){
+    return this.run(this::stop);
+  }  
   // A method to set the voltage of the intake roller
   public void setIntakeLauncherRoller(double voltage) {
     intakeLauncherRoller.setVoltage(voltage);
